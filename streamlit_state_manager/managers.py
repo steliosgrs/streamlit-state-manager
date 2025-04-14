@@ -83,3 +83,45 @@ class StateManager:
                 namespace = key.split("_", 1)[0]
                 namespaces.add(namespace)
         return namespaces
+
+    @classmethod
+    def create_namespace(cls, namespace: str) -> "NamespacedManager":
+        """Create a namespaced manager for a specific namespace."""
+        return NamespacedManager(namespace)
+
+
+class NamespacedManager:
+    """
+    A manager for a specific namespace, with simplified method calls.
+    """
+
+    def __init__(self, namespace: str):
+        self.namespace = namespace
+
+    def exists(self, key: str) -> bool:
+        """Check if a key exists in this namespace."""
+        return StateManager.exists(key, self.namespace)
+
+    def init(self, key: str, default_value: Any = None) -> Any:
+        """Initialize a key with a default value if it doesn't exist."""
+        return StateManager.init(key, default_value, self.namespace)
+
+    def get(self, key: str, default_value: Any = None) -> Any:
+        """Get a value from this namespace, initializing it if needed."""
+        return StateManager.get(key, default_value, self.namespace)
+
+    def set(self, key: str, value: Any) -> None:
+        """Set a value in this namespace."""
+        StateManager.set(key, value, self.namespace)
+
+    def delete(self, key: str) -> None:
+        """Delete a key from this namespace if it exists."""
+        StateManager.delete(key, self.namespace)
+
+    def clear(self) -> None:
+        """Clear all keys in this namespace."""
+        StateManager.clear_namespace(self.namespace)
+
+    def get_keys(self) -> List[str]:
+        """Get all keys in this namespace."""
+        return StateManager.get_keys(self.namespace)
