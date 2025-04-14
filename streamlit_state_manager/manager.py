@@ -85,12 +85,12 @@ class StateManager:
         return namespaces
 
     @classmethod
-    def create_namespace(cls, namespace: str) -> "NamespacedManager":
+    def create_namespace(cls, namespace: str) -> "NamespaceManager":
         """Create a namespaced manager for a specific namespace."""
-        return NamespacedManager(namespace)
+        return NamespaceManager(namespace)
 
 
-class NamespacedManager:
+class NamespaceManager:
     """
     A manager for a specific namespace, with simplified method calls.
     """
