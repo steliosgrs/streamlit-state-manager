@@ -26,15 +26,21 @@ jobs:
           VERSION=${BRANCH_NAME#release/}
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Update version in pyproject.toml
+      - name: Update version in pyproject.toml and __init__.py
         run: |
           VERSION="${{ steps.extract_version.outputs.version }}"
+          # Update pyproject.toml
           sed -i "s/version = \"[0-9]*\.[0-9]*\.[0-9]*\"/version = \"$VERSION\"/" pyproject.toml
+
+          # Update __init__.py - adjust the path if needed
+          sed -i "s/__version__ = \"[0-9]*\.[0-9]*\.[0-9]*\"/__version__ = \"$VERSION\"/" streamlit_state_manager/__init__.py
+
+          # If you have other files that need version updates, add them here
 
       - name: Commit and push changes
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add pyproject.toml
+          git add pyproject.toml streamlit_state_manager/__init__.py
           git commit -m "Bump version to ${{ steps.extract_version.outputs.version }}"
           git push
