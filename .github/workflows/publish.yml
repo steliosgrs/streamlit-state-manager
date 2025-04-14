@@ -4,23 +4,37 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "pyproject.toml" # This ensures it only triggers when version changes
 
 jobs:
   release:
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/heads/main') && contains(github.event.head_commit.message, 'release')
+    permissions:
+      contents: write # Required for creating releases
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Get full history for proper version detection
 
       - name: Get version from pyproject.toml
         id: get_version
         run: |
           VERSION=$(grep -m 1 'version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+          echo "Version found: $VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
+      - name: Check if release exists
+        id: check_release
+        run: |
+          if gh release view v${{ steps.get_version.outputs.version }} 2>/dev/null; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Create Release
+        if: steps.check_release.outputs.exists != 'true'
         id: create_release
         uses: actions/create-release@v1
         env:
