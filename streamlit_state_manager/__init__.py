@@ -1,5 +1,5 @@
-__version__ = "0.2.0"
+__version__ = "0.1.0"
 
-from streamlit_state_manager.managers import StateManager, NamespacedManager
+from streamlit_state_manager.manager import StateManager
 
-__all__ = ["StateManager", "NamespacedManager"]
+__all__ = ["StateManager"]
