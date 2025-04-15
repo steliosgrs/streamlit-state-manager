@@ -16,7 +16,7 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/heads/main') && contains(github.event.head_commit.message, 'release')
+    if: startsWith(github.ref, 'refs/heads/main')
     steps:
       - uses: actions/checkout@v3
 
